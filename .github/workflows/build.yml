@@ -1,27 +1,24 @@
 name: build wheels
 
-on: [push, workflow_dispatch]
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
-	build_wheels:
-		runs-on: ubuntu-latest
+ build_wheels:
+runs-on: ubuntu-latest
+steps:
+- uses: actions/checkout@v4
+- name: Set up Python
+uses: actions/setup-python@v5
+with: 
+python-version: "3.13
+- name: Install cibuildwheel
+  run: pip install cibuildwheel
 
-		steps:
-			- uses: actions/checkout@v4
+- name: Build wheels
+  run: cibuildwheel --output-dir wheelhouse
 
-			- name: Set up Python
-				uses: actions/setup-python@v5
-				with:
-					python-version: "3.13"
-
-			- name: Install cibuildwheel
-				run: pip install cibuildwheel
-
-			- name: Build wheels
-				run: cibuildwheel --output-dir wheelhouse
-
-			- name: Upload artifacts
-				uses: actions/upload-artifact@v4
-				with:
-					name: wheels
-					path: wheelhouse/*.whl
+- name: Upload artifacts
+  uses: actions/upload-artifact@v4
+  with:
+- name: wheels
+	path: wheelhouse/*.whl
