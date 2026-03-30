@@ -1,47 +1,54 @@
 name: build-python
 
-on: [push, workflow_dispatch]
+on:
+	push:
+		branches: [ main ]
+	workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+	build:
+		runs-on: ubuntu-latest
 
-    container:
-      image: alpine:3.20
+		container:
+			image: alpine:3.20
 
-    steps:
-      - name: Install build dependencies
-        run: |
-          apk add --no-cache \
-          build-base \
-          linux-headers \
-          openssl-dev \
-          zlib-dev \
-          bzip2-dev \
-          xz-dev \
-          readline-dev \
-          sqlite-dev \
-          libffi-dev \
-          wget
+		steps:
+			- name: Install dependencies
+				run: |
+					apk add --no-cache \
+					build-base \
+					linux-headers \
+					openssl-dev \
+					zlib-dev \
+					bzip2-dev \
+					xz-dev \
+					readline-dev \
+					sqlite-dev \
+					libffi-dev \
+					wget \
+					git
 
-      - name: Download Python source
-        run: |
-          wget https://www.python.org/ftp/python/3.13.0/Python-3.13.0.tgz
-          tar -xf Python-3.13.0.tgz
+			- name: Download CPython
+				run: |
+					wget https://www.python.org/ftp/python/3.13.0/Python-3.13.0.tgz
+					tar -xf Python-3.13.0.tgz
 
-      - name: Build Python
-        run: |
-          cd Python-3.13.0
-          ./configure --prefix=/python313
-          make -j$(nproc)
-          make install
+			- name: Build Python
+				run: |
+					cd Python-3.13.0
+					./configure --prefix=/python313
+					make -j$(nproc)
+					make install
 
-      - name: Package build
-        run: |
-          tar -czf python313-musl.tar.gz /python313
+			- name: Package build
+				run: |
+					tar -czf python313-musl.tar.gz /python313
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: python313-musl
-          path: python313-musl.tar.gz
+			- name: Create Release
+				uses: softprops/action-gh-release@v2
+				with:
+					tag_name: latest
+					name: python313-musl
+					files: python313-musl.tar.gz
+				env:
+					GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
