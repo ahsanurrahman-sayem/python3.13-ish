@@ -1,0 +1,77 @@
+name: build-python313-apk
+
+on:
+ push:
+  tags: -"apk-*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+ build:
+  runs-on: ubuntu-latest
+
+  container:
+      image: alpine:3.20
+
+  steps:
+    - name: Install build tools
+      run: |
+       apk add --no-cache alpine-sdk abuild wget tar
+    
+    - name: Create builder user
+      run: |
+       adduser -D builder
+       addgroup builder abuild
+       chown -R builder /home/builder
+    - name: Setup abuild key
+      run: |
+       su builder -c "abuild-keygen -a -n -i"
+    - name: Prepare workspace
+      run: |
+       su builder -c "
+       mkdir -p ~/python-apk
+       cd ~/python-apk
+       wget https://github.com/ahsanurrahman-sayem/python3.13-ish/releases/download/latest/python313-musl.tar.gz
+       tar -xzf python313-musl.tar.gz
+       "
+    - name: Create APKBUILD
+      run: |
+       cat << 'EOF' > /home/builder/python-apk/APKBUILD
+       pkgname=python313
+       pkgver=3.13.0
+       pkgrel=0
+       pkgdesc="Python 3.13 musl build for iSH"
+       url="https://python.org"
+       arch="x86"
+       license="Python-2.0"
+       depends=""
+       source="python313-musl.tar.gz"
+       builddir="\$srcdir"
+      
+       build() {
+       return 0
+       }
+       package() {
+       mkdir -p "\$pkgdir/usr/local"
+       cp -r "\$srcdir/python313/"* "\$pkgdir/usr/local/"
+       }EOF
+   
+    - name: Build APK
+      run: |
+       su builder -c "
+       cd ~/python-apk
+       abuild checksum
+       abuild -r
+       "
+    - name: Collect APK
+      run: |
+       cp /home/builder/packages/x86/*.apk .
+
+    - name: Publish Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: python313-apk
+        name: python313-apk
+        files: "*.apk"
