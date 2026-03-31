@@ -47,14 +47,15 @@ jobs:
        depends=""
        source="python313-musl.tar.gz"
        builddir="\$srcdir"
-      
+       
        build() {
-       return 0
+           return 0
        }
        package() {
-       mkdir -p "\$pkgdir/usr/local"
-       cp -r "\$srcdir/python313/"* "\$pkgdir/usr/local/"
-       }EOF
+           mkdir -p "\$pkgdir/usr/local"
+           cp -r "\$srcdir/python313/"* "\$pkgdir/usr/local/"
+       }
+       EOF
    
     - name: Build APK
       run: |
