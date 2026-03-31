@@ -1,13 +1,9 @@
 name: build-python313-apk
 
-on:
- push:
-  tags: -"apk-*"
-  workflow_dispatch:
+on: [push,workflow_dispatch] 
 
 permissions:
   contents: write
-
 jobs:
  build:
   runs-on: ubuntu-latest
