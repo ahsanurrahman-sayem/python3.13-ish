@@ -66,7 +66,7 @@ jobs:
        "
     - name: Collect APK
       run: |
-       cp /home/builder/packages/x86/*.apk .
+       cp /home/builder/packages/*/*.apk .
 
     - name: Publish Release
       uses: softprops/action-gh-release@v2
