@@ -42,7 +42,7 @@ jobs:
        pkgrel=0
        pkgdesc="Python 3.13 musl build for iSH"
        url="https://python.org"
-       arch="x86"
+       arch="all"
        license="Python-2.0"
        depends=""
        source="python313-musl.tar.gz"
