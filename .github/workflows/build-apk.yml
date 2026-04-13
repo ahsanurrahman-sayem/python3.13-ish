@@ -55,7 +55,7 @@ jobs:
 
        package() {
          mkdir -p "$pkgdir/usr/local"
-         cp -r "$srcdir/python313-3.13.0/"* "$pkgdir/usr/local/"
+         cp -r "$builddir/"* "$pkgdir/usr/local/"
        }
        EOF
 
