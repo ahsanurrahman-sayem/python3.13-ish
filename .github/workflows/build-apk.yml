@@ -46,17 +46,29 @@ jobs:
        license="Python-2.0"
        depends=""
        source="python313-musl.tar.gz"
-       builddir="\$srcdir"
-       
+       builddir="$srcdir"
+       options="!check"
+
        build() {
-           return 0
+        return 0
        }
+
        package() {
-        mkdir -p "\$pkgdir/usr/local"
-        cp -r "\$srcdir/"* "\$pkgdir/usr/local/"
+         mkdir -p "$pkgdir/usr/local"
+         cp -r "$srcdir/python313-3.13.0/"* "$pkgdir/usr/local/"
        }
        EOF
-   
+
+    - name: Debug srcdir
+      run: |
+        su builder -c "
+        cd ~/python-apk
+        abuild checksum
+        abuild unpack
+        find src
+        "
+
+
     - name: Build APK
       run: |
        su builder -c "
