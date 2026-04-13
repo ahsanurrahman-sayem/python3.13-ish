@@ -54,8 +54,8 @@ jobs:
        }
 
        package() {
-         mkdir -p "$pkgdir/usr/local"
-         cp -r "$builddir/"* "$pkgdir/usr/local/"
+        mkdir -p "$pkgdir/usr"
+        cp -r "$builddir/"* "$pkgdir/usr/"
        }
        EOF
 
