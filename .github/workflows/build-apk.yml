@@ -53,10 +53,18 @@ jobs:
         return 0
        }
 
+       #package() {
+       #mkdir -p "$pkgdir/usr"
+       #cp -r "$builddir/"* "$pkgdir/usr/"
+       #}
        package() {
         mkdir -p "$pkgdir/usr"
-        cp -r "$builddir/"* "$pkgdir/usr/"
+        # Ensure you are copying from the actual extracted directory
+        cp -r "$srcdir"/* "$pkgdir/usr/"
+        # Remove the srcdir itself if it was copied recursively
+        rm -rf "$pkgdir/usr/src" 
        }
+
        EOF
 
     - name: Debug srcdir
