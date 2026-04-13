@@ -52,8 +52,8 @@ jobs:
            return 0
        }
        package() {
-           mkdir -p "\$pkgdir/usr/local"
-           cp -r "\$srcdir/python313/"* "\$pkgdir/usr/local/"
+        mkdir -p "\$pkgdir/usr/local"
+        cp -r "\$srcdir/"* "\$pkgdir/usr/local/"
        }
        EOF
    
